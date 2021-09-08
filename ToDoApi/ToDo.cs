@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ToDoApi
 {
-    class ToDo
+    public class ToDo
     {
         public string Key { get; set; }
 

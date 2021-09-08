@@ -12,11 +12,13 @@ namespace ToDoApi.Controllers
     [Route("api/[controller]")]
     public class ToDoController : ControllerBase
     {
+        private readonly IToDoCrud _data = new ToDoCrud();
+
         // GET: api/<ToDoController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ToDo> Get()
         {
-            return new string[] { "value1", "value2" };
+            return await _data.GetAllAsync();
         }
 
         // GET api/<ToDoController>/5
@@ -28,8 +30,14 @@ namespace ToDoApi.Controllers
 
         // POST api/<ToDoController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task Post([FromBody] ToDo data)
         {
+            if (data == null)
+            {
+                return;
+            }
+
+            await _data.AddAsync(data);
         }
 
         // PUT api/<ToDoController>/5

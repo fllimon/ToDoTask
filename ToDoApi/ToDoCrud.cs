@@ -9,7 +9,9 @@ namespace ToDoApi
 {
     class ToDoCrud : IToDoCrud
     {
-        public async Task AddItem(ToDo item)
+        public const string FILE_NAME = "todo.json";
+
+        public async Task AddAsync(ToDo item)
         {
             await Task.Run(() => Add(item));
         }
@@ -19,9 +21,9 @@ namespace ToDoApi
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ToDo> GetAll()
+        public async Task<ToDo> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => GetAllData());
         }
 
         public ToDo Remove(string key)
@@ -43,10 +45,16 @@ namespace ToDoApi
                 Name = item.Name
             };
 
-            string fileName = "todo.json";
             string jsonString = JsonSerializer.Serialize(todoData);
 
-            File.WriteAllText(fileName, jsonString);
+            File.WriteAllText(FILE_NAME, jsonString);
+        }
+
+        private ToDo GetAllData()
+        {
+            ToDo data = JsonSerializer.Deserialize<ToDo>(File.ReadAllText(FILE_NAME));
+
+            return data;
         }
     }
 }

@@ -7,9 +7,9 @@ namespace ToDoApi
 {
     interface IToDoCrud
     {
-        Task AddItem(ToDo item);
+        Task AddAsync(ToDo item);
 
-        IEnumerable<ToDo> GetAll();
+        Task<ToDo> GetAllAsync();
 
         ToDo Find(string key);
 
