@@ -7,7 +7,7 @@ namespace ToDoApi
 {
     interface IToDoCrud
     {
-        void Add(ToDo item);
+        Task AddItem(ToDo item);
 
         IEnumerable<ToDo> GetAll();
 
