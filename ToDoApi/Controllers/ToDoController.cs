@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,22 @@ namespace ToDoApi.Controllers
     [Route("api/[controller]")]
     public class ToDoController : ControllerBase
     {
-        private readonly IToDoCrud _data = new ToDoCrud();
+        private readonly IToDoCrud _data;
+
+        public ToDoController(IToDoCrud data)
+        {
+            _data = data ?? throw new ArgumentException(nameof(data));
+        }
 
         // GET: api/<ToDoController>
         [HttpGet]
-        public async Task<ToDo> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Get()
         {
-            return await _data.GetAllAsync();
+            var data = await _data.GetAllAsync();
+
+            return data != null ? Ok(data) : BadRequest();
         }
 
         // GET api/<ToDoController>/5
