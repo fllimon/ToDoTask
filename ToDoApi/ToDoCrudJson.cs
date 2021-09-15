@@ -7,7 +7,7 @@ using System.IO;
 
 namespace ToDoApi
 {
-    class ToDoCrud : IToDoCrud
+    class ToDoCrudJson : IToDoCrud
     {
         public const string FILE_NAME = "todo.json";
 
@@ -16,8 +16,9 @@ namespace ToDoApi
             await Task.Run(() => Add(item));
         }
 
-        public ToDo Find(string key)
+        public async Task<ToDo> FindAsync(string key)
         {
+            // return await Task.Run(() => GetDataOnKey(key));
             throw new NotImplementedException();
         }
 
@@ -49,6 +50,29 @@ namespace ToDoApi
 
             File.WriteAllText(FILE_NAME, jsonString);
         }
+
+        //private ToDo GetDataOnKey(string key)
+        //{
+        //    var data = JsonSerializer.Deserialize<ToDo>(File.ReadAllText(FILE_NAME));
+
+        //    foreach (var item in data)
+        //    {
+        //        if (item.Equals(key))
+        //        {
+        //            ToDo todo = new ToDo
+        //            {
+        //                Key = data.Key,
+        //                Name = data.Name,
+        //                Date = data.Date,
+        //                IsComplete = data.IsComplete
+        //            };
+
+        //            return todo;
+        //        }
+        //    }
+
+        //    throw new KeyNotFoundException("Data not found");
+        //}
 
         private ToDo GetAllData()
         {

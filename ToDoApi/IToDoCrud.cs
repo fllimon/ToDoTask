@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace ToDoApi
 {
-    interface IToDoCrud
+    public interface IToDoCrud
     {
         Task AddAsync(ToDo item);
 
         Task<ToDo> GetAllAsync();
 
-        ToDo Find(string key);
+        Task<ToDo> FindAsync(string key);
 
         ToDo Remove(string key);
 

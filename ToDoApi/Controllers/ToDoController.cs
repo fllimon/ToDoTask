@@ -32,8 +32,8 @@ namespace ToDoApi.Controllers
         }
 
         // GET api/<ToDoController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{key}")]
+        public string Get(string key)
         {
             return "value";
         }
