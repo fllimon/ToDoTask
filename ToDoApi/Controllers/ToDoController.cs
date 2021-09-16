@@ -33,14 +33,16 @@ namespace ToDoApi.Controllers
 
         // GET api/<ToDoController>/5
         [HttpGet("{key}")]
-        public string Get(string key)
+        public async Task<IActionResult> Get(string key)
         {
-            return "value";
+            var data = await _data.FindAsync(key);
+
+            return data != null ? Ok(data) : BadRequest();
         }
 
         // POST api/<ToDoController>
         [HttpPost]
-        public async Task Post([FromBody] ToDo data)
+        public async Task Post([FromBody] ToDo data)    // ToDo: Как обработать с IActionResult 
         {
             if (data == null)
             {

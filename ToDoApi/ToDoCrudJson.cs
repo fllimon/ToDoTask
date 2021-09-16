@@ -18,8 +18,8 @@ namespace ToDoApi
 
         public async Task<ToDo> FindAsync(string key)
         {
-            // return await Task.Run(() => GetDataOnKey(key));
-            throw new NotImplementedException();
+             return await Task.Run(() => GetDataOnKey(key));
+            //throw new NotImplementedException();
         }
 
         public async Task<ToDo> GetAllAsync()
@@ -39,40 +39,27 @@ namespace ToDoApi
 
         private void Add(ToDo item)
         {
-            var todoData = new ToDo
+            if (item == null)
             {
-                IsComplete = item.IsComplete,
-                Key = item.Key,
-                Name = item.Name
-            };
+                return;
+            }
 
-            string jsonString = JsonSerializer.Serialize(todoData);
+            string jsonString = JsonSerializer.Serialize(item);
 
             File.WriteAllText(FILE_NAME, jsonString);
         }
 
-        //private ToDo GetDataOnKey(string key)
-        //{
-        //    var data = JsonSerializer.Deserialize<ToDo>(File.ReadAllText(FILE_NAME));
+        private ToDo GetDataOnKey(string key)
+        {
+            ToDo data = JsonSerializer.Deserialize<ToDo>(File.ReadAllText(FILE_NAME));
 
-        //    foreach (var item in data)
-        //    {
-        //        if (item.Equals(key))
-        //        {
-        //            ToDo todo = new ToDo
-        //            {
-        //                Key = data.Key,
-        //                Name = data.Name,
-        //                Date = data.Date,
-        //                IsComplete = data.IsComplete
-        //            };
+            if (data.Key.Equals(key))
+            {
+                return data;
+            }
 
-        //            return todo;
-        //        }
-        //    }
-
-        //    throw new KeyNotFoundException("Data not found");
-        //}
+            throw new KeyNotFoundException("Data not found");
+        }
 
         private ToDo GetAllData()
         {
