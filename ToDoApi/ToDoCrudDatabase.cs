@@ -5,11 +5,18 @@ using System.Threading.Tasks;
 
 namespace ToDoApi
 {
-    public class ToDoCrudDatabase : IToDoCrud
+    public class ToDoCrudDatabase : IToDoCrudEF
     {
-        public Task AddAsync(ToDo item)
+        private ToDoContext _db;
+
+        public ToDoCrudDatabase(ToDoContext db)
         {
-            throw new NotImplementedException();
+            _db = db;
+        }
+
+        public async Task AddAsync(ToDo item)
+        {
+            await Task.Run(() => Add(item));
         }
 
         public Task<ToDo> FindAsync(string key)
@@ -17,9 +24,9 @@ namespace ToDoApi
             throw new NotImplementedException();
         }
 
-        public Task<ToDo> GetAllAsync()
+        public async Task<IEnumerable<ToDo>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => Get());
         }
 
         public ToDo Remove(string key)
@@ -30,6 +37,22 @@ namespace ToDoApi
         public void Update(ToDo item)
         {
             throw new NotImplementedException();
+        }
+
+        private void Add(ToDo item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            _db.ToDo.Add(item);
+            _db.SaveChanges();
+        }
+
+        private IEnumerable<ToDo> Get()
+        {
+            return _db.ToDo.ToList();
         }
     }
 }
