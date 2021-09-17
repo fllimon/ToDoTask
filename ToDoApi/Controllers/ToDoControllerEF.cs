@@ -12,9 +12,9 @@ namespace ToDoApi.Controllers
     [ApiController]
     public class ToDoControllerEF : ControllerBase
     {
-        private IToDoCrud _crud;
+        private IToDoCrudEF _crud;
 
-        public ToDoControllerEF(IToDoCrud crud)
+        public ToDoControllerEF(IToDoCrudEF crud)
         {
             _crud = crud;
         }
@@ -23,7 +23,9 @@ namespace ToDoApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            throw new NotImplementedException();
+            var data = await _crud.GetAllAsync();
+
+            return data != null ? Ok(data) : BadRequest();
         }
 
         // GET api/<ToDoControllerEF>/5
@@ -35,8 +37,9 @@ namespace ToDoApi.Controllers
 
         // POST api/<ToDoControllerEF>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task Post([FromBody] ToDo data)
         {
+            await _crud.AddAsync(data);
         }
 
         // PUT api/<ToDoControllerEF>/5
