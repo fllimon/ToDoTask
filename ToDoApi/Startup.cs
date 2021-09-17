@@ -28,6 +28,7 @@ namespace ToDoApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ToDoContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IToDoCrudEF, ToDoCrudDatabase>();
             services.AddScoped<IToDoCrud, ToDoCrudJson>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
