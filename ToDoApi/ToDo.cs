@@ -12,7 +12,7 @@ namespace ToDoApi
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long? Id { get; set; }
+        public long Id { get; set; }    //ToDo: Можно ли убрать это поле?
 
         [Column("KeyToDo")]
         public string Key { get; set; }
@@ -24,6 +24,6 @@ namespace ToDoApi
         public DateTime Date { get; set; }
 
         [Column("IsComplete")]
-        public bool IsComplete { get; set; } = false;    //ToDo: tinyint to bool ?? 
+        public byte IsComplete { get; set; }    //ToDo: tinyint to bool ?? 
     }
 }

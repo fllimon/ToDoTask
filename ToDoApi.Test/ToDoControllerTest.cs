@@ -16,7 +16,7 @@ namespace ToDoApi.Test
             {
                 Key = "123",
                 Description = "dfd",
-                IsComplete = true
+                IsComplete = 0
             };
 
             var mockToDoCrud = new Mock<IToDoCrud>();
@@ -46,7 +46,7 @@ namespace ToDoApi.Test
             {
                 Key = "123",
                 Description = "name",
-                IsComplete = false
+                IsComplete = 0
             };
 
             var result = controller.Post(data);

@@ -16,7 +16,9 @@ namespace ToDoApi
 
         public async Task AddAsync(ToDo item)
         {
-            await Task.Run(() => Add(item));
+            _db.ToDo.Add(item);
+
+           await _db.SaveChangesAsync();
         }
 
         public Task<ToDo> FindAsync(string key)
@@ -39,20 +41,20 @@ namespace ToDoApi
             throw new NotImplementedException();
         }
 
-        private void Add(ToDo item)
-        {
-            if (item == null)
-            {
-                return;
-            }
+        //private void Add(ToDo item)
+        //{
+        //    if (item == null)
+        //    {
+        //        return;
+        //    }
 
-            _db.ToDo.Add(item);
-            _db.SaveChanges();
-        }
+        //    _db.ToDo.Add(item);
+        //    _db.SaveChanges();
+        //}
 
         private IEnumerable<ToDo> Get()
         {
-            return _db.ToDo.ToList();
+            return _db.ToDo.ToList();    //ToDo: Read LazyLoading
         }
     }
 }

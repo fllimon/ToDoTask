@@ -22,9 +22,11 @@ namespace ToDoApi
             //throw new NotImplementedException();
         }
 
-        public async Task<ToDo> GetAllAsync()
+        public async Task<ToDo> GetAllAsync()    // IEnumerable<ToDO>
         {
-            return await Task.Run(() => GetAllData());
+            //return Task.FromResult(GetAllData());
+
+            return await Task.Run(() => GetAllData());    //ToDo: DeserializeAsync
         }
 
         public ToDo Remove(string key)
