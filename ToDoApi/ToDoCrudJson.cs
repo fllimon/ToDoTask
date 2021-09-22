@@ -10,6 +10,7 @@ namespace ToDoApi
     class ToDoCrudJson : IToDoCrud
     {
         public const string FILE_NAME = "todo.json";
+        private List<ToDo> _lists;
 
         public async Task AddAsync(ToDo item)
         {
@@ -22,11 +23,17 @@ namespace ToDoApi
             //throw new NotImplementedException();
         }
 
-        public async Task<ToDo> GetAllAsync()    // IEnumerable<ToDO>
+        public async Task<IEnumerable<ToDo>> GetAllAsync()
         {
-            //return Task.FromResult(GetAllData());
+            StreamReader reader = new StreamReader(FILE_NAME);
 
-            return await Task.Run(() => GetAllData());    //ToDo: DeserializeAsync
+            ToDo data = await JsonSerializer.DeserializeAsync<ToDo>(reader.BaseStream);   
+
+            _lists = new List<ToDo>();
+
+            _lists.Add(data);
+
+            return _lists;
         }
 
         public ToDo Remove(string key)
@@ -61,13 +68,6 @@ namespace ToDoApi
             }
 
             throw new KeyNotFoundException("Data not found");
-        }
-
-        private ToDo GetAllData()
-        {
-            ToDo data = JsonSerializer.Deserialize<ToDo>(File.ReadAllText(FILE_NAME));
-
-            return data;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace ToDoApi
     {
         Task AddAsync(ToDo item);
 
-        Task<ToDo> GetAllAsync();
+        Task<IEnumerable<ToDo>> GetAllAsync();
 
         Task<ToDo> FindAsync(string key);
 
