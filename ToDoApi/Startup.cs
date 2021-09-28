@@ -28,8 +28,16 @@ namespace ToDoApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ToDoContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<IToDoCrudEF, ToDoCrudDatabase>();
-            services.AddScoped<IToDoCrud, ToDoCrudJson>();
+            
+            if (ConfigurationValue(Configuration))
+            {
+                services.AddScoped<IToDoCrud, ToDoCrudDatabase>();
+            }
+            else
+            {
+                services.AddScoped<IToDoCrud, ToDoCrudJson>();
+            }
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -57,6 +65,13 @@ namespace ToDoApi
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private bool ConfigurationValue(IConfiguration config)
+        {
+            bool result = bool.Parse(config["ProjectConfiguration:UseDatabase"]);
+
+            return result;
         }
     }
 }
