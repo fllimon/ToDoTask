@@ -16,9 +16,7 @@ namespace ToDoApi
 
         public async Task AddAsync(ToDo item)
         {
-            ToDo data = new ToDo { Date = DateTime.Now, Description = "dsfsdf", IsComplete = 0, Key = "sfddasf", IsDeleted = 0 };
-            
-            _db.ToDo.Add(data);
+            _db.ToDo.Add(item);
 
            await _db.SaveChangesAsync();
         }
@@ -35,7 +33,11 @@ namespace ToDoApi
 
         public async Task Remove(string key)
         {
-            throw new NotImplementedException();
+            ToDo data = (ToDo)_db.ToDo.Where(a => a.Key.Equals(key));
+            data.IsDeleted = 1;
+
+            _db.ToDo.Update(data);
+            await _db.SaveChangesAsync();
         }
 
         public void Update(ToDo item)
@@ -43,27 +45,11 @@ namespace ToDoApi
             throw new NotImplementedException();
         }
 
-        //private void Add(ToDo item)
-        //{
-        //    if (item == null)
-        //    {
-        //        return;
-        //    }
-
-        //    _db.ToDo.Add(item);
-        //    _db.SaveChanges();
-        //}
-
         private IEnumerable<ToDo> Get()
         {
             var data = _db.ToDo.Select(a => a).Where(a => a.IsDeleted != 1);
 
-            return data.ToList();    //ToDo: Read LazyLoading
-        }
-
-        private void Delete(string key)
-        {
-            ToDo data = (ToDo)_db.ToDo.Where(a => a.Key.Equals(key));
+            return data.ToList();  
         }
     }
 }

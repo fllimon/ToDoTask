@@ -50,8 +50,9 @@ namespace ToDoApi.Controllers
 
         // DELETE api/<ToDoControllerEF>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(string key)
         {
+            await _crud.Remove(key);
         }
     }
 }
