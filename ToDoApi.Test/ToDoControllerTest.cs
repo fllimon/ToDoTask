@@ -19,20 +19,20 @@ namespace ToDoApi.Test
                 IsComplete = 0
             };
 
-            var mockToDoCrud = new Mock<IToDoCrud>();
+            //var mockToDoCrud = new Mock<IToDoCrud>();
 
-            mockToDoCrud.Setup(x => x.GetAllAsync()).ReturnsAsync(data);
+            //mockToDoCrud.Setup(x => x.GetAllAsync()).ReturnsAsync(data);
 
-            ToDoController controller = new ToDoController(mockToDoCrud.Object);
+            //ToDoController controller = new ToDoController(mockToDoCrud.Object);
 
             //var taskResult = controller.Get();
             //Task.WaitAll(taskResult);
             //var resultFromTask = taskResult.Result;    // Выполняется в await под капотом 
 
-            var result = await controller.Get() as OkObjectResult;
+            //var result = await controller.Get() as OkObjectResult;
 
-            Assert.NotNull(result);
-            Assert.Equal(200, result.StatusCode);
+            //Assert.NotNull(result);
+            //Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]

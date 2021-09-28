@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ToDoApi
 {
-    public class ToDoCrudDatabase : IToDoCrudEF
+    public class ToDoCrudDatabase : IToDoCrud
     {
         private ToDoContext _db;
 
@@ -16,7 +16,9 @@ namespace ToDoApi
 
         public async Task AddAsync(ToDo item)
         {
-            _db.ToDo.Add(item);
+            ToDo data = new ToDo { Date = DateTime.Now, Description = "dsfsdf", IsComplete = 0, Key = "sfddasf", IsDeleted = 0 };
+            
+            _db.ToDo.Add(data);
 
            await _db.SaveChangesAsync();
         }
@@ -31,7 +33,7 @@ namespace ToDoApi
             return await Task.Run(() => Get());
         }
 
-        public ToDo Remove(string key)
+        public async Task Remove(string key)
         {
             throw new NotImplementedException();
         }
@@ -54,7 +56,14 @@ namespace ToDoApi
 
         private IEnumerable<ToDo> Get()
         {
-            return _db.ToDo.ToList();    //ToDo: Read LazyLoading
+            var data = _db.ToDo.Select(a => a).Where(a => a.IsDeleted != 1);
+
+            return data.ToList();    //ToDo: Read LazyLoading
+        }
+
+        private void Delete(string key)
+        {
+            ToDo data = (ToDo)_db.ToDo.Where(a => a.Key.Equals(key));
         }
     }
 }

@@ -13,7 +13,7 @@ namespace ToDoApi
 
         Task<ToDo> FindAsync(string key);
 
-        ToDo Remove(string key);
+        Task Remove(string key);
 
         void Update(ToDo item);
     }

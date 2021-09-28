@@ -36,7 +36,7 @@ namespace ToDoApi
             return _lists;
         }
 
-        public ToDo Remove(string key)
+        public Task Remove(string key)
         {
             throw new NotImplementedException();
         }

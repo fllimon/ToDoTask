@@ -14,22 +14,16 @@ namespace ToDoApi
         
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [JsonIgnore]
         public long Id { get; set; }   
 
-        [Column("KeyToDo")]
         public string Key { get; set; }
 
-        [Column("DescriptionToDo")]
         public string Description { get; set; }
 
-        [Column("DateTimeToDo")]
         public DateTime Date { get; set; }
 
-        [Column("IsComplete")]
         public byte IsComplete { get; set; } 
         
-        [JsonIgnore]
         public byte IsDeleted { get; set; }
     }
 }

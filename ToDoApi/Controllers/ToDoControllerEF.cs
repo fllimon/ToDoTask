@@ -12,9 +12,9 @@ namespace ToDoApi.Controllers
     [ApiController]
     public class ToDoControllerEF : ControllerBase
     {
-        private IToDoCrudEF _crud;
+        private IToDoCrud _crud;
 
-        public ToDoControllerEF(IToDoCrudEF crud)
+        public ToDoControllerEF(IToDoCrud crud)
         {
             _crud = crud;
         }

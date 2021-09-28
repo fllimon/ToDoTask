@@ -15,10 +15,5 @@ namespace ToDoApi
         }
 
         public DbSet<ToDo> ToDo { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ToDo>().ToTable("ToDo");
-        }
     }
 }
