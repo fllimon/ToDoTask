@@ -7,13 +7,13 @@ namespace ToDoApi
 {
     public interface IToDoCrud
     {
-        Task AddAsync(ToDo item);
+        Task<bool> AddAsync(ToDo item);
 
         Task<IEnumerable<ToDo>> GetAllAsync();
 
-        Task<ToDo> FindAsync(string key);
+        ToDo GetToDoById(long id);
 
-        Task<bool> Remove(long key);
+        Task<bool> Remove(long id);
 
         Task<bool> Update(ToDo item);
     }
