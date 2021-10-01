@@ -23,7 +23,7 @@ namespace ToDoApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var data = await _crud.GetAllAsync();
+            var data = await _crud.GetAllAsync();    //ToDo: read MiddleWare filter.
 
             return data != null ? Ok(data) : BadRequest();
         }
@@ -49,10 +49,12 @@ namespace ToDoApi.Controllers
         }
 
         // DELETE api/<ToDoControllerEF>/5
-        [HttpDelete("{id}")]
-        public async Task Delete(string key)
+        [HttpDelete("{key}")]
+        public async Task<IActionResult> Delete(string key)
         {
             await _crud.Remove(key);
+
+            return Ok();
         }
     }
 }

@@ -33,8 +33,12 @@ namespace ToDoApi
 
         public async Task Remove(string key)
         {
-            ToDo data = (ToDo)_db.ToDo.Where(a => a.Key.Equals(key));
-            data.IsDeleted = 1;
+            ToDo data = _db.ToDo.Where(a => a.Description.Equals(key)).FirstOrDefault();
+
+            if (data == null)
+            {
+                return;
+            }
 
             _db.ToDo.Update(data);
             await _db.SaveChangesAsync();
@@ -47,7 +51,7 @@ namespace ToDoApi
 
         private IEnumerable<ToDo> Get()
         {
-            var data = _db.ToDo.Select(a => a).Where(a => a.IsDeleted != 1);
+            var data = _db.ToDo.Where(a => a.IsDeleted != 1);
 
             return data.ToList();  
         }

@@ -16,8 +16,6 @@ namespace ToDoApi
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }   
 
-        public string Key { get; set; }
-
         public string Description { get; set; }
 
         public DateTime Date { get; set; }

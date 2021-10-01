@@ -48,9 +48,11 @@ namespace ToDoApi
 
         private void Add(ToDo item)
         {
+            //bool isOk = false;
+
             if (item == null)
             {
-                return;
+                throw new NullReferenceException();
             }
 
             string jsonString = JsonSerializer.Serialize(item);
@@ -62,7 +64,7 @@ namespace ToDoApi
         {
             ToDo data = JsonSerializer.Deserialize<ToDo>(File.ReadAllText(FILE_NAME));
 
-            if (data.Key.Equals(key))
+            if (data.Description.Equals(key))
             {
                 return data;
             }

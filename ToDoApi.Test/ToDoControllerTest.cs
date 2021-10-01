@@ -14,7 +14,7 @@ namespace ToDoApi.Test
         {
             var data = new ToDo
             {
-                Key = "123",
+                //Key = "123",
                 Description = "dfd",
                 IsComplete = 0
             };
@@ -44,7 +44,7 @@ namespace ToDoApi.Test
 
             var data = new ToDo
             {
-                Key = "123",
+                //Key = "123",
                 Description = "name",
                 IsComplete = 0
             };
