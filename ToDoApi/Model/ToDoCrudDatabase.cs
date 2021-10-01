@@ -53,18 +53,30 @@ namespace ToDoApi
                 return isUpdated;
             }
 
-            ToDo data = new ToDo 
+            ToDo obj = FindToDoById(item);
+
+            if (obj == null)
             {
-                Date = item.Date, 
+                return isUpdated;
+            }
+
+            ToDo data = new ToDo
+            {
+                Date = item.Date,
                 Description = item.Description,
-                IsComplete = item.IsComplete, 
-                IsDeleted = item.IsDeleted 
+                IsComplete = item.IsComplete,
+                IsDeleted = item.IsDeleted
             };
 
             _db.ToDo.Update(data);
             await _db.SaveChangesAsync();
 
             return isUpdated = true;
+        }
+
+        private ToDo FindToDoById(ToDo item)
+        {
+            return _db.ToDo.Where(x => x.Id == item.Id).FirstOrDefault();
         }
 
         private IEnumerable<ToDo> Get()
