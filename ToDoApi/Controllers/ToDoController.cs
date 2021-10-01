@@ -33,16 +33,20 @@ namespace ToDoApi.Controllers
 
         // GET api/<ToDoControllerEF>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(long id)
         {
-            return "value";
+            var data = _crud.GetToDoById(id);
+
+            return data != null ? Ok(data) : BadRequest(data);
         }
 
         // POST api/<ToDoControllerEF>
         [HttpPost]
-        public async Task Post([FromBody] ToDo data)
+        public async Task<IActionResult> Post([FromBody] ToDo data)
         {
-            await _crud.AddAsync(data);
+           bool result = await _crud.AddAsync(data);
+
+           return result ? Ok(result) : BadRequest(result);
         }
 
         // PUT api/<ToDoControllerEF>
