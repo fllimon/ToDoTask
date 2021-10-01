@@ -9,59 +9,58 @@ using System.Threading.Tasks;
 
 namespace ToDoApi.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class ToDoController : ControllerBase
     {
-        private readonly IToDoCrud _data;
+        private IToDoCrud _crud;
 
-        public ToDoController(IToDoCrud data)
+        public ToDoController(IToDoCrud crud)
         {
-            _data = data ?? throw new ArgumentException(nameof(data));
+            _crud = crud ?? throw new ArgumentException(nameof(crud));
         }
 
-        // GET: api/<ToDoController>
+        // GET: api/<ToDoControllerEF>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
-            var data = await _data.GetAllAsync();
+            var data = await _crud.GetAllAsync();    //ToDo: read MiddleWare filter.
 
             return data != null ? Ok(data) : BadRequest();
         }
 
-        // GET api/<ToDoController>/5
-        [HttpGet("{key}")]
-        public async Task<IActionResult> Get(string key)
+        // GET api/<ToDoControllerEF>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
         {
-            var data = await _data.FindAsync(key);
-
-            return data != null ? Ok(data) : BadRequest();
+            return "value";
         }
 
-        // POST api/<ToDoController>
+        // POST api/<ToDoControllerEF>
         [HttpPost]
-        public async Task Post([FromBody] ToDo data)    // ToDo: Как обработать с IActionResult 
+        public async Task Post([FromBody] ToDo data)
         {
-            if (data == null)
-            {
-                return;
-            }
-
-            await _data.AddAsync(data);
+            await _crud.AddAsync(data);
         }
 
-        // PUT api/<ToDoController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/<ToDoControllerEF>
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] ToDo data)
         {
+            bool result = await _crud.Update(data);
+
+            return result ? Ok(result) : BadRequest(result);
         }
 
-        // DELETE api/<ToDoController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // DELETE api/<ToDoControllerEF>/5
+        [HttpDelete("{key}")]
+        public async Task<IActionResult> Delete(string key)
         {
+            await _crud.Remove(key);
+
+            return Ok();
         }
     }
 }

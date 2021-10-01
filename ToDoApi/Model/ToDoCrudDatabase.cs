@@ -44,9 +44,27 @@ namespace ToDoApi
             await _db.SaveChangesAsync();
         }
 
-        public void Update(ToDo item)
+        public async Task<bool> Update(ToDo item)
         {
-            throw new NotImplementedException();
+            bool isUpdated = false;
+
+            if (item == null)
+            {
+                return isUpdated;
+            }
+
+            ToDo data = new ToDo 
+            {
+                Date = item.Date, 
+                Description = item.Description,
+                IsComplete = item.IsComplete, 
+                IsDeleted = item.IsDeleted 
+            };
+
+            _db.ToDo.Update(data);
+            await _db.SaveChangesAsync();
+
+            return isUpdated = true;
         }
 
         private IEnumerable<ToDo> Get()

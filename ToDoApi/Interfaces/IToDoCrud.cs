@@ -15,6 +15,6 @@ namespace ToDoApi
 
         Task Remove(string key);
 
-        void Update(ToDo item);
+        Task<bool> Update(ToDo item);
     }
 }

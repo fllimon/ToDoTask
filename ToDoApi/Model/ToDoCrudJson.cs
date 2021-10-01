@@ -41,7 +41,7 @@ namespace ToDoApi
             throw new NotImplementedException();
         }
 
-        public void Update(ToDo item)
+        public async Task<bool> Update(ToDo item)
         {
             throw new NotImplementedException();
         }
