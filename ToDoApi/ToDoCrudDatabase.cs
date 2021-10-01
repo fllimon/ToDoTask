@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,18 +9,25 @@ namespace ToDoApi
 {
     public class ToDoCrudDatabase : IToDoCrud
     {
+        private readonly string _connectionString;
         private ToDoContext _db;
 
-        public ToDoCrudDatabase(ToDoContext db)
+        public ToDoCrudDatabase(IConfiguration config)
         {
-            _db = db;
+            _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
         public async Task AddAsync(ToDo item)
         {
-            _db.ToDo.Add(item);
+            DbContextOptions<ToDoContext> option = GetOption();
 
-           await _db.SaveChangesAsync();
+            using (_db = new ToDoContext(option))
+            {
+
+                _db.ToDo.Add(item);
+
+                await _db.SaveChangesAsync();
+            }
         }
 
         public Task<ToDo> FindAsync(string key)
@@ -28,57 +37,70 @@ namespace ToDoApi
 
         public async Task<IEnumerable<ToDo>> GetAllAsync()
         {
-            return await Task.Run(() => Get());
+            DbContextOptions<ToDoContext> option = GetOption();
+
+            using (_db = new ToDoContext(option))
+            {
+
+                var data = _db.ToDo.Where(a => a.IsDeleted != 1);
+
+                return await data.ToListAsync();
+            }
         }
 
         public async Task<bool> Remove(long id)
         {
             bool isDeleted = false;
+            DbContextOptions<ToDoContext> option = GetOption();
 
-            ToDo data = FindToDoById(id);
-
-            if (data == null)
+            using (_db = new ToDoContext(option))
             {
-                return isDeleted;
+
+                ToDo data = FindToDoById(id);
+
+                if (data == null)
+                {
+                    return isDeleted;
+                }
+
+                data.IsDeleted = 1;
+
+                _db.ToDo.Update(data);
+                await _db.SaveChangesAsync();
+
+                return isDeleted = true;
             }
-
-            data.IsDeleted = 1;
-
-            _db.ToDo.Update(data);
-            await _db.SaveChangesAsync();
-
-            return isDeleted = true;
         }
 
         public async Task<bool> Update(ToDo item)
         {
             bool isUpdated = false;
+            DbContextOptions<ToDoContext> option = GetOption();
 
-            if (item == null)
+            using (_db = new ToDoContext(option))
             {
-                return isUpdated;
+                if (item == null)
+                {
+                    return isUpdated;
+                }
+
+                ToDo obj = FindToDoById(item.Id);
+
+                if (obj == null)
+                {
+                    return isUpdated;
+                }
+
+                obj.Description = item.Description;
+                obj.Date = item.Date;
+                obj.IsComplete = item.IsComplete;
+                obj.IsDeleted = item.IsDeleted;
+
+                _db.ToDo.Update(obj);
+                await _db.SaveChangesAsync();
+
+                return isUpdated = true;
             }
-
-            ToDo obj = FindToDoById(item.Id);
-
-            if (obj == null)
-            {
-                return isUpdated;
-            }
-
-            ToDo data = new ToDo
-            {
-                Id = item.Id,
-                Date = item.Date,
-                Description = item.Description,
-                IsComplete = item.IsComplete,
-                IsDeleted = item.IsDeleted
-            };
-
-            _db.ToDo.Update(data);
-            await _db.SaveChangesAsync();
-
-            return isUpdated = true;
         }
 
         private ToDo FindToDoById(long id)
@@ -86,11 +108,12 @@ namespace ToDoApi
             return _db.ToDo.Where(x => x.Id == id && x.IsDeleted != 1).FirstOrDefault();
         }
 
-        private IEnumerable<ToDo> Get()
+        private DbContextOptions<ToDoContext> GetOption()
         {
-            var data = _db.ToDo.Where(a => a.IsDeleted != 1);
+            DbContextOptionsBuilder<ToDoContext> optionBuilder = new DbContextOptionsBuilder<ToDoContext>();
+            DbContextOptions<ToDoContext> option = optionBuilder.UseSqlServer(_connectionString).Options;
 
-            return data.ToList();  
+            return option;
         }
     }
 }
