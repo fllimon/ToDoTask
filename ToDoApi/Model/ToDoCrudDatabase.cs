@@ -31,17 +31,23 @@ namespace ToDoApi
             return await Task.Run(() => Get());
         }
 
-        public async Task Remove(string key)
+        public async Task<bool> Remove(long id)
         {
-            ToDo data = _db.ToDo.Where(a => a.Description.Equals(key)).FirstOrDefault();
+            bool isDeleted = false;
+
+            ToDo data = FindToDoById(id);
 
             if (data == null)
             {
-                return;
+                return isDeleted;
             }
+
+            data.IsDeleted = 1;
 
             _db.ToDo.Update(data);
             await _db.SaveChangesAsync();
+
+            return isDeleted = true;
         }
 
         public async Task<bool> Update(ToDo item)
@@ -53,7 +59,7 @@ namespace ToDoApi
                 return isUpdated;
             }
 
-            ToDo obj = FindToDoById(item);
+            ToDo obj = FindToDoById(item.Id);
 
             if (obj == null)
             {
@@ -62,6 +68,7 @@ namespace ToDoApi
 
             ToDo data = new ToDo
             {
+                Id = item.Id,
                 Date = item.Date,
                 Description = item.Description,
                 IsComplete = item.IsComplete,
@@ -74,9 +81,9 @@ namespace ToDoApi
             return isUpdated = true;
         }
 
-        private ToDo FindToDoById(ToDo item)
+        private ToDo FindToDoById(long id)
         {
-            return _db.ToDo.Where(x => x.Id == item.Id).FirstOrDefault();
+            return _db.ToDo.Where(x => x.Id == id && x.IsDeleted != 1).FirstOrDefault();
         }
 
         private IEnumerable<ToDo> Get()

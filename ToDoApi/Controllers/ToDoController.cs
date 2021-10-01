@@ -55,12 +55,12 @@ namespace ToDoApi.Controllers
         }
 
         // DELETE api/<ToDoControllerEF>/5
-        [HttpDelete("{key}")]
-        public async Task<IActionResult> Delete(string key)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
         {
-            await _crud.Remove(key);
+            bool result = await _crud.Remove(id);
 
-            return Ok();
+            return result ? Ok(result) : BadRequest(result);
         }
     }
 }
