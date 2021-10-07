@@ -32,8 +32,8 @@ namespace ToDoApi
 
         }
 
-        //[Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }   
 
         public string Description { get; set; }
