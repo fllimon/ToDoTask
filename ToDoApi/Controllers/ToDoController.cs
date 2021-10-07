@@ -33,9 +33,9 @@ namespace ToDoApi.Controllers
 
         // GET api/<ToDoControllerEF>/5
         [HttpGet("{id}")]
-        public IActionResult Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
-            var data = _crud.GetToDoById(id);
+            var data = await _crud.GetToDoById(id);
 
             return data != null ? Ok(data) : BadRequest(data);
         }
