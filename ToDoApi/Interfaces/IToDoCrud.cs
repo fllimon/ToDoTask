@@ -11,7 +11,7 @@ namespace ToDoApi
 
         Task<IEnumerable<ToDo>> GetAllAsync();
 
-        ToDo GetToDoById(long id);
+        Task<ToDo> GetToDoById(long id);
 
         Task<bool> Remove(long id);
 

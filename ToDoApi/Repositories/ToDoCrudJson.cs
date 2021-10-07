@@ -15,50 +15,27 @@ namespace ToDoApi
        
         public async Task<bool> AddAsync(ToDo item)
         {
-            return await Task.Run(() => Add(item));
+            return await Add(item);
         }
 
-        public ToDo GetToDoById(long id)
+        public async Task<ToDo> GetToDoById(long id)
         {
-            IEnumerable<ToDo> data = DesetializeData();
-
-            foreach (ToDo item in data)
-            {
-                if (item.Id == id)
-                {
-                    return item;
-                }
-            }
-
-            throw new KeyNotFoundException();
+            return _lists.FirstOrDefault(x => x.Id == id);
         }
 
         public async Task<IEnumerable<ToDo>> GetAllAsync()
         {
-            using (StreamReader reader = new StreamReader(FILE_NAME))
-            {
-                return await Task.Run(() => DesetializeData());
-            }
+            return await DesetializeData();
         }
 
         public async Task<bool> Remove(long id)
         {
             bool isDeleted = false;
-            IEnumerable<ToDo> data = DesetializeData();
 
-            foreach (ToDo item in data)
-            {
-                if (item.Id == id)
-                {
-                    ToDo obj = new ToDo(item);
-                    _lists.Remove(obj);
-                    isDeleted = true;
+            var data = _lists.FirstOrDefault(x => x.Id == id);
+            _lists.Remove(data);
 
-                    break;
-                }
-            }
-
-            SerealizeData(_lists);
+            await SerealizeData(_lists);
 
             return isDeleted;
         }
@@ -66,25 +43,16 @@ namespace ToDoApi
         public async Task<bool> Update(ToDo item)
         {
             bool isUpdated = false;
-            IEnumerable<ToDo> data = DesetializeData();
 
-            foreach (ToDo tmp in data)
-            {
-                if (tmp.Id == item.Id)
-                {
-                    ToDo obj = new ToDo(tmp);
-                    _lists.Remove(obj);
+            var data = _lists.FirstOrDefault(x => x.Id == item.Id);
+            _lists.Remove(data);
 
-                    Add(item);
-                    isUpdated = true;
+            await Add(item);
 
-                    break;
-                }
-            }
             return isUpdated;
         }
 
-        private bool Add(ToDo item)
+        private async Task<bool> Add(ToDo item)
         {
             bool isAdd = false;
 
@@ -94,24 +62,24 @@ namespace ToDoApi
             }
 
             _lists.Add(item);
-            SerealizeData(_lists);
+            await SerealizeData(_lists);
 
             return isAdd = true;
         }
 
-        private void SerealizeData(IList<ToDo> lists)
+        private async Task SerealizeData(IList<ToDo> lists)
         {
             using (StreamWriter writer = new StreamWriter(FILE_NAME))
             {
                 var data = JsonConvert.SerializeObject(lists);
 
-                writer.WriteLine(data);
+                await writer.WriteLineAsync(data);
             }
         }
 
-        private IEnumerable<ToDo> DesetializeData()
+        private async Task<IEnumerable<ToDo>> DesetializeData()
         {
-            return JsonConvert.DeserializeObject<List<ToDo>>(File.ReadAllText(FILE_NAME));
+            return JsonConvert.DeserializeObject<List<ToDo>>(await File.ReadAllTextAsync(FILE_NAME));
         }
     }
 }
