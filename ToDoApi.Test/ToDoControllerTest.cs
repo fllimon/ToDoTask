@@ -4,6 +4,7 @@ using ToDoApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace ToDoApi.Test
 {
@@ -12,12 +13,7 @@ namespace ToDoApi.Test
         [Fact]
         public async Task ViewDataNotNull()
         {
-            var data = new ToDo
-            {
-                //Key = "123",
-                Description = "dfd",
-                IsComplete = 0
-            };
+            var data = new ToDo(5, "saf", DateTime.Now, 0, 0);
 
             //var mockToDoCrud = new Mock<IToDoCrud>();
 
@@ -42,12 +38,7 @@ namespace ToDoApi.Test
 
             ToDoController controller = new ToDoController(mockToDoCrud.Object);
 
-            var data = new ToDo
-            {
-                //Key = "123",
-                Description = "name",
-                IsComplete = 0
-            };
+            var data = new ToDo(4, "fjrm", DateTime.Now, 0, 0);
 
             var result = controller.Post(data);
 

@@ -11,9 +11,29 @@ namespace ToDoApi
 {
     public class ToDo
     {
-        
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public ToDo()
+        {
+
+        }
+
+        [JsonConstructor]
+        public ToDo(long id, string description, DateTime date, byte isComplete, byte isDeleted)
+        {
+            Id = id;
+            Description = description;
+            Date = date;
+            IsComplete = isComplete;
+            IsDeleted = isDeleted;
+        }
+
+        public ToDo(ToDo item)
+            : this(item.Id, item.Description, item.Date, item.IsComplete, item.IsDeleted)
+        {
+
+        }
+
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }   
 
         public string Description { get; set; }
