@@ -11,8 +11,8 @@ namespace ToDoApi
     class ToDoCrudJson : IToDoCrud
     {
         public const string FILE_NAME = "todo.json";
-        private static IList<ToDo> _lists = new List<ToDo>();
-       
+        private Lazy<IList<ToDo>> _lists = new Lazy<IList<ToDo>>(DeserializeData().ToList());
+
         public async Task<bool> AddAsync(ToDo item)
         {
             return await Add(item);
@@ -20,23 +20,28 @@ namespace ToDoApi
 
         public async Task<ToDo> GetToDoById(long id)
         {
-            return _lists.FirstOrDefault(x => x.Id == id);
+            return _lists.Value.FirstOrDefault(x => x.Id == id);
         }
 
         public async Task<IEnumerable<ToDo>> GetAllAsync()
         {
-            return await DesetializeData();
+            return await DeserializeDataAsync();
         }
 
         public async Task<bool> Remove(long id)
         {
             bool isDeleted = false;
 
-            var data = _lists.FirstOrDefault(x => x.Id == id);
-            _lists.Remove(data);
+            var data = _lists.Value.FirstOrDefault(x => x.Id == id);
+            
+            if (data != null)
+            {
+                _lists.Value.Remove(data);
+                await SerealizeData(_lists.Value);
 
-            await SerealizeData(_lists);
-
+                isDeleted = true;
+            }
+            
             return isDeleted;
         }
 
@@ -44,8 +49,8 @@ namespace ToDoApi
         {
             bool isUpdated = false;
 
-            var data = _lists.FirstOrDefault(x => x.Id == item.Id);
-            _lists.Remove(data);
+            var data = _lists.Value.FirstOrDefault(x => x.Id == item.Id);
+            _lists.Value.Remove(data);
 
             await Add(item);
 
@@ -61,8 +66,8 @@ namespace ToDoApi
                 return isAdd;
             }
 
-            _lists.Add(item);
-            await SerealizeData(_lists);
+            _lists.Value.Add(item);
+            await SerealizeData(_lists.Value);
 
             return isAdd = true;
         }
@@ -77,7 +82,12 @@ namespace ToDoApi
             }
         }
 
-        private async Task<IEnumerable<ToDo>> DesetializeData()
+        private static IEnumerable<ToDo> DeserializeData()
+        {
+            return JsonConvert.DeserializeObject<List<ToDo>>(File.ReadAllText(FILE_NAME));
+        }
+
+        private async Task<IEnumerable<ToDo>> DeserializeDataAsync()
         {
             return JsonConvert.DeserializeObject<List<ToDo>>(await File.ReadAllTextAsync(FILE_NAME));
         }
