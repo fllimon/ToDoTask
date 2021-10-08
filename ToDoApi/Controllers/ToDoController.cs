@@ -33,7 +33,7 @@ namespace ToDoApi.Controllers
 
         // GET api/<ToDoControllerEF>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> GetById(long id)
         {
             var data = await _crud.GetToDoById(id);
 
