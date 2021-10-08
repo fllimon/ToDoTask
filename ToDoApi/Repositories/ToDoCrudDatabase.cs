@@ -36,15 +36,13 @@ namespace ToDoApi
             }
         }
 
-        public ToDo GetToDoById(long id)
+        public async Task<ToDo> GetToDoById(long id)
         {
             DbContextOptions<ToDoContext> option = GetOption();
 
             using (_db = new ToDoContext(option)) 
             {
-                ToDo data = FindToDoById(id);
-
-                return data;
+                return await _db.FindAsync<ToDo>(id);
             }
         }
 
@@ -54,21 +52,18 @@ namespace ToDoApi
 
             using (_db = new ToDoContext(option))
             {
-
-                var data = _db.ToDo.Where(a => a.IsDeleted != 1);
-
-                return await data.ToListAsync();
+                return await _db.ToDo.Where(a => a.IsDeleted != 1).ToListAsync();
             }
         }
 
         public async Task<bool> Remove(long id)
         {
             bool isDeleted = false;
+
             DbContextOptions<ToDoContext> option = GetOption();
 
             using (_db = new ToDoContext(option))
             {
-
                 ToDo data = FindToDoById(id);
 
                 if (data == null)
