@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace ToDoApi
+namespace ToDo.EFDatabase.Context
 {
     public class ToDoContext : DbContext
     {
@@ -14,6 +14,6 @@ namespace ToDoApi
 
         }
 
-        public DbSet<ToDo> ToDo { get; set; }
+        public DbSet<Models.ToDo> ToDo { get; set; }
     }
 }

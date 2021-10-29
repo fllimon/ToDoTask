@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,15 +8,10 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace ToDoApi
+namespace ToDo.EFDatabase.Models
 {
-    public class ToDo
+    public class ToDo : IToDo
     {
-        public ToDo()
-        {
-
-        }
-
         [JsonConstructor]
         public ToDo(long id, string description, DateTime date, byte isComplete, byte isDeleted)
         {
@@ -26,12 +22,6 @@ namespace ToDoApi
             IsDeleted = isDeleted;
         }
 
-        public ToDo(ToDo item)
-            : this(item.Id, item.Description, item.Date, item.IsComplete, item.IsDeleted)
-        {
-
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }   
@@ -40,8 +30,8 @@ namespace ToDoApi
 
         public DateTime Date { get; set; }
 
-        public byte IsComplete { get; set; } 
-        
+        public byte IsComplete { get; set; }
+
         public byte IsDeleted { get; set; }
     }
 }

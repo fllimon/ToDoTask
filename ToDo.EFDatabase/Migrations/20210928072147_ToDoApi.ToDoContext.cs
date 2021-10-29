@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ToDoApi.Migrations
+namespace ToDo.EFDatabase.Migrations
 {
     public partial class ToDoApiToDoContext : Migration
     {

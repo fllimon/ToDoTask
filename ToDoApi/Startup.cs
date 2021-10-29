@@ -1,17 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using ToDoApi.Validator;
+using Domain.Interfaces;
+using ToDo.EFDatabase.Repositories;
+using TextFileDatabase.Repositories;
+using ToDo.EFDatabase.Factoryes;
+using TextFileDatabase.Factoryes;
 
 namespace ToDoApi
 {
@@ -30,13 +29,17 @@ namespace ToDoApi
             if (ConfigurationValue(Configuration))
             {
                 services.AddScoped<IToDoCrud, ToDoCrudDatabase>();
+                services.AddSingleton<IToDoFactory, ToDoEfFactory>();
             }
             else
             {
                 services.AddScoped<IToDoCrud, ToDoCrudJson>();
+                services.AddSingleton<IToDoFactory, ToDoJsonFactory>();
             }
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDoApi", Version = "v1" });

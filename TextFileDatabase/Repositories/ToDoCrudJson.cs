@@ -4,26 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
+using Domain.Interfaces;
+using TextFileDatabase.Models;
 
-namespace ToDoApi
+namespace TextFileDatabase.Repositories
 {
-    class ToDoCrudJson : IToDoCrud
+    public class ToDoCrudJson : IToDoCrud
     {
         public const string FILE_NAME = "todo.json";
         private Lazy<IList<ToDo>> _lists = new Lazy<IList<ToDo>>(DeserializeData().ToList());
 
-        public async Task<bool> AddAsync(ToDo item)
+        public async Task<bool> AddAsync(IToDo item)
         {
             return await Add(item);
         }
 
-        public async Task<ToDo> GetToDoById(long id)
+        public async Task<IToDo> GetToDoById(long id)
         {
             return _lists.Value.FirstOrDefault(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<ToDo>> GetAllAsync()
+        public async Task<IEnumerable<IToDo>> GetAllAsync()
         {
             return await DeserializeDataAsync();
         }
@@ -45,7 +46,7 @@ namespace ToDoApi
             return isDeleted;
         }
 
-        public async Task<bool> Update(ToDo item)
+        public async Task<bool> Update(IToDo item)
         {
             bool isUpdated = false;
 
@@ -57,7 +58,7 @@ namespace ToDoApi
             return isUpdated;
         }
 
-        private async Task<bool> Add(ToDo item)
+        private async Task<bool> Add(IToDo item)
         {
             bool isAdd = false;
 
@@ -66,17 +67,26 @@ namespace ToDoApi
                 return isAdd;
             }
 
-            _lists.Value.Add(item);
+            _lists.Value.Add((ToDo)item);
             await SerealizeData(_lists.Value);
 
             return isAdd = true;
+        }
+
+        public async Task<bool> IsIdExist(long id)
+        {
+            bool isExist = false;
+
+            var data = _lists.Value.FirstOrDefault(x => x.Id == id);
+
+            return data != null ? isExist = true : false;
         }
 
         private async Task SerealizeData(IList<ToDo> lists)
         {
             using (StreamWriter writer = new StreamWriter(FILE_NAME))
             {
-                var data = JsonConvert.SerializeObject(lists);
+                var data = JsonSerializer.Serialize(lists);
 
                 await writer.WriteLineAsync(data);
             }
@@ -84,12 +94,12 @@ namespace ToDoApi
 
         private static IEnumerable<ToDo> DeserializeData()
         {
-            return JsonConvert.DeserializeObject<List<ToDo>>(File.ReadAllText(FILE_NAME));
+            return JsonSerializer.Deserialize<List<ToDo>>(File.ReadAllText(FILE_NAME));
         }
 
         private async Task<IEnumerable<ToDo>> DeserializeDataAsync()
         {
-            return JsonConvert.DeserializeObject<List<ToDo>>(await File.ReadAllTextAsync(FILE_NAME));
+            return JsonSerializer.Deserialize<List<ToDo>>(await File.ReadAllTextAsync(FILE_NAME));
         }
     }
 }

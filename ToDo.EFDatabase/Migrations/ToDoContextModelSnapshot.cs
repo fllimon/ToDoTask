@@ -3,10 +3,9 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ToDoApi;
+using ToDo.EFDatabase.Context;
 
-namespace ToDoApi.Migrations
+namespace ToDo.EFDatabase.Migrations
 {
     [DbContext(typeof(ToDoContext))]
     partial class ToDoContextModelSnapshot : ModelSnapshot

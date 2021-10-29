@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDo.EFDatabase.Context;
 
-namespace ToDoApi
+
+namespace ToDo.EFDatabase.Repositories
 {
     public class ToDoCrudDatabase : IToDoCrud
     {
@@ -17,7 +20,7 @@ namespace ToDoApi
             _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
-        public async Task<bool> AddAsync(ToDo item)
+        public async Task<bool> AddAsync(IToDo item)
         {
             bool isAdd = false;
             DbContextOptions<ToDoContext> option = GetOption();
@@ -29,24 +32,24 @@ namespace ToDoApi
                     return isAdd;
                 }
 
-                _db.ToDo.Add(item);
+                _db.ToDo.Add((Models.ToDo)item);
                 await _db.SaveChangesAsync();
 
                 return isAdd = true;
             }
         }
 
-        public async Task<ToDo> GetToDoById(long id)
+        public async Task<IToDo> GetToDoById(long id)
         {
             DbContextOptions<ToDoContext> option = GetOption();
 
             using (_db = new ToDoContext(option)) 
             {
-                return await _db.FindAsync<ToDo>(id);
+                return await _db.FindAsync<IToDo>(id);
             }
         }
 
-        public async Task<IEnumerable<ToDo>> GetAllAsync()
+        public async Task<IEnumerable<IToDo>> GetAllAsync()
         {
             DbContextOptions<ToDoContext> option = GetOption();
 
@@ -64,7 +67,7 @@ namespace ToDoApi
 
             using (_db = new ToDoContext(option))
             {
-                ToDo data = FindToDoById(id);
+                Models.ToDo data = FindToDoById(id);
 
                 if (data == null)
                 {
@@ -80,7 +83,7 @@ namespace ToDoApi
             }
         }
 
-        public async Task<bool> Update(ToDo item)
+        public async Task<bool> Update(IToDo item)
         {
             bool isUpdated = false;
             DbContextOptions<ToDoContext> option = GetOption();
@@ -92,7 +95,7 @@ namespace ToDoApi
                     return isUpdated;
                 }
 
-                ToDo obj = FindToDoById(item.Id);
+                Models.ToDo obj = FindToDoById(item.Id);
 
                 if (obj == null)
                 {
@@ -111,7 +114,20 @@ namespace ToDoApi
             }
         }
 
-        private ToDo FindToDoById(long id)
+        public async Task<bool> IsIdExist(long id)
+        {
+            bool isExist = false;
+            DbContextOptions<ToDoContext> option = GetOption();
+
+            using (_db = new ToDoContext(option))
+            {
+                Models.ToDo item = await _db.FindAsync<Models.ToDo>(id);
+
+                return item != null ? isExist = true : isExist;
+            }
+        }
+
+        private Models.ToDo FindToDoById(long id)
         {
             return _db.ToDo.Where(x => x.Id == id && x.IsDeleted != 1).FirstOrDefault();
         }

@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Domain.Interfaces;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoApi.Models;
+using ToDoApi.Validator;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,9 +18,11 @@ namespace ToDoApi.Controllers
     public class ToDoController : ControllerBase
     {
         private IToDoCrud _crud;
-
-        public ToDoController(IToDoCrud crud)
+        private IToDoFactory _factory;
+        
+        public ToDoController(IToDoCrud crud, IToDoFactory factory)
         {
+            _factory = factory;
             _crud = crud ?? throw new ArgumentException(nameof(crud));
         }
 
@@ -42,26 +48,47 @@ namespace ToDoApi.Controllers
 
         // POST api/<ToDoControllerEF>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ToDo data)
+        public async Task<IActionResult> Post([FromBody] PostToDo data)    // ToDo: Поправить валидатор, error в json ИД = 0
         {
-           bool result = await _crud.AddAsync(data);
+            var validator = new PostValidator(_crud);
 
-           return result ? Ok(result) : BadRequest(result);
+            ValidationResult result = validator.Validate(data);
+
+            if (result.IsValid)
+            {
+                return Ok(await _crud.AddAsync(_factory.GetToDo(0, data.Description, data.Date, 0)));
+            }
+
+            return BadRequest(result.Errors);
         }
 
         // PUT api/<ToDoControllerEF>
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] ToDo data)
+        public async Task<IActionResult> Put([FromBody] PutToDo data)
         {
-            bool result = await _crud.Update(data);
+            var validator = new PutValidator(_crud);
+            ValidationResult result = validator.Validate(data);
 
-            return result ? Ok(result) : BadRequest(result);
+            if (result.IsValid)
+            {
+                return Ok(await _crud.Update(_factory.GetToDo(data.Id, data.Description, data.Date, data.IsComplete)));
+            }
+
+            return BadRequest(result.Errors);
         }
 
         // DELETE api/<ToDoControllerEF>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
+            //var validator = new ToDoValidator(_crud);
+            //ValidationResult result = validator.Validate(id);
+
+            //if (result.IsValid)
+            //{
+            //    return Ok(await _crud.Update(data));
+            //}
+
             bool result = await _crud.Remove(id);
 
             return result ? Ok(result) : BadRequest(result);

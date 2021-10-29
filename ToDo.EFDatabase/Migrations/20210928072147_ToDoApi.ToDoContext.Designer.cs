@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ToDoApi;
+using ToDo.EFDatabase.Context;
 
-namespace ToDoApi.Migrations
+
+namespace ToDo.EFDatabase.Migrations
 {
     [DbContext(typeof(ToDoContext))]
     [Migration("20210928072147_ToDoApi.ToDoContext")]
