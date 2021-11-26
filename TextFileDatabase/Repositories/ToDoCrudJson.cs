@@ -46,7 +46,7 @@ namespace TextFileDatabase.Repositories
             return isDeleted;
         }
 
-        public async Task<bool> Update(IToDo item)
+        public async Task<bool> UpdateAsync(IToDo item)
         {
             bool isUpdated = false;
 
@@ -66,6 +66,10 @@ namespace TextFileDatabase.Repositories
             {
                 return isAdd;
             }
+
+            ToDo tmp = _lists.Value.LastOrDefault();
+            long id = (tmp.Id + 1);
+            item.Id = id;
 
             _lists.Value.Add((ToDo)item);
             await SerealizeData(_lists.Value);
