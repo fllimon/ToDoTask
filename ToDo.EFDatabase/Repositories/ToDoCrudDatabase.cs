@@ -83,7 +83,7 @@ namespace ToDo.EFDatabase.Repositories
             }
         }
 
-        public async Task<bool> Update(IToDo item)
+        public async Task<bool> UpdateAsync(IToDo item)
         {
             bool isUpdated = false;
             DbContextOptions<ToDoContext> option = GetOption();
