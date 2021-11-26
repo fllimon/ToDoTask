@@ -15,7 +15,7 @@ namespace Domain.Interfaces
 
         Task<bool> Remove(long id);
 
-        Task<bool> Update(IToDo item);
+        Task<bool> UpdateAsync(IToDo item);
 
         Task<bool> IsIdExist(long id);
     }
