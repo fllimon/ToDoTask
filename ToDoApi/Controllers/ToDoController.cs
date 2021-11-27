@@ -3,8 +3,6 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Validator;
@@ -32,7 +30,7 @@ namespace ToDoApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
-            var data = await _crud.GetAllAsync();    //ToDo: read MiddleWare filter.
+            var data = await _crud.GetAllAsync();   
 
             return data != null ? Ok(data) : BadRequest();
         }
@@ -71,7 +69,7 @@ namespace ToDoApi.Controllers
 
             if (result.IsValid)
             {
-                return Ok(await _crud.Update(_factory.GetToDo(data.Id, data.Description, data.Date, data.IsComplete)));
+                return Ok(await _crud.UpdateAsync(_factory.GetToDo(data.Id, data.Description, data.Date, data.IsComplete)));
             }
 
             return BadRequest(result.Errors);
@@ -81,14 +79,6 @@ namespace ToDoApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            //var validator = new ToDoValidator(_crud);
-            //ValidationResult result = validator.Validate(id);
-
-            //if (result.IsValid)
-            //{
-            //    return Ok(await _crud.Update(data));
-            //}
-
             bool result = await _crud.Remove(id);
 
             return result ? Ok(result) : BadRequest(result);
