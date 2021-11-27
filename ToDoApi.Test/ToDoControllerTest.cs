@@ -7,109 +7,39 @@ using System.Threading.Tasks;
 using System;
 using Domain.Interfaces;
 using ToDoApi.Models;
+using FluentAssertions;
 
 namespace ToDoApi.Test
 {
     public class ToDoControllerTest
     {
-        //[Fact]
-        //public async Task ViewDataNotNull()
-        //{
-        //    var data = new ToDo(5, "saf", DateTime.Now, 0, 0);
+        private ToDoController _ctrl;
+        private Mock<IToDoCrud> _mockToDoCrud;
+        private Mock<IToDoFactory> _mockFactory;
 
-        //    //var mockToDoCrud = new Mock<IToDoCrud>();
-
-        //    //mockToDoCrud.Setup(x => x.GetAllAsync()).ReturnsAsync(data);
-
-        //    //ToDoController controller = new ToDoController(mockToDoCrud.Object);
-
-        //    //var taskResult = controller.Get();
-        //    //Task.WaitAll(taskResult);
-        //    //var resultFromTask = taskResult.Result;    // Выполняется в await под капотом 
-
-        //    //var result = await controller.Get() as OkObjectResult;
-
-        //    //Assert.NotNull(result);
-        //    //Assert.Equal(200, result.StatusCode);
-        //}
-
-        [Fact]
-        public async Task AddData()
+        public ToDoControllerTest()
         {
-            var data = new PostToDo { Date = DateTime.Now, Description = "aafsdgfg"};
+            _mockToDoCrud = new Mock<IToDoCrud>();
+            _mockFactory = new Mock<IToDoFactory>();
 
-            var mockToDoCrud = new Mock<IToDoCrud>();
-            var mockFactory = new Mock<IToDoFactory>();
-
-            mockToDoCrud.Setup(x => x.AddAsync(mockFactory.Object.GetToDo(0, data.Description, data.Date, 0, 0))).ReturnsAsync(true);
-
-            ToDoController controller = new ToDoController(mockToDoCrud.Object, mockFactory.Object);
-
-            var result = await controller.Post(data);
-
-            Assert.IsType<OkObjectResult>(result);    // ToDo: проверка на налл
+            _ctrl = new ToDoController(_mockToDoCrud.Object, _mockFactory.Object);
         }
 
-        //[Fact]
-        //public async Task DeleteData()
-        //{
-        //    var data = new ToDo(5, "fjrm", DateTime.Now, 0, 0);
-
-        //    var mockToDoCrud = new Mock<IToDoCrud>();
-        //    mockToDoCrud.Setup(x => x.Remove(data.Id)).ReturnsAsync(true);
-
-        //    ToDoController controller = new ToDoController(mockToDoCrud.Object);
-
-        //    var result = await controller.Delete(5);
-
-        //    Assert.IsType<OkObjectResult>(result);
-        //}
-
         [Fact]
-        public async Task UpdateData()
+        public async Task AddDataOkResult()
         {
-            var data = new PutToDo {Id = 2, Description = "sadf", Date = DateTime.Now, IsComplete = 0 };
+            //Arrange
+            var data = new PostToDo { Date = DateTime.MaxValue, Description = "aafsdgfg"};
+            var returnResult = new ToDoTest();
 
-            var mockToDoCrud = new Mock<IToDoCrud>();
-            var mockFactory = new Mock<IToDoFactory>();
+            _mockFactory.Setup(x => x.GetToDo(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<byte>(), It.IsAny<byte>())).Returns(returnResult);
+            _mockToDoCrud.Setup(x => x.AddAsync(It.IsAny<IToDo>())).ReturnsAsync(true);
 
-            mockToDoCrud.Setup(x => x.Update(mockFactory.Object.GetToDo(data.Id, data.Description, data.Date, data.IsComplete, 0))).ReturnsAsync(true);
+            //Act
+            var result = await _ctrl.Post(data);
 
-            ToDoController controller = new ToDoController(mockToDoCrud.Object, mockFactory.Object);
-
-            var result = await controller.Put(data);
-
-            Assert.IsType<OkObjectResult>(result);
+            // Assertion
+            result.Should().BeOfType<OkObjectResult>();  
         }
-
-        //[Fact]
-        //public async Task GetData()
-        //{
-        //    var data = new ToDo(4, "fjrm", DateTime.Now, 0, 0);
-
-        //    var mockToDoCrud = new Mock<IToDoCrud>();
-        //    mockToDoCrud.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<ToDo>());
-
-        //    ToDoController controller = new ToDoController(mockToDoCrud.Object);
-
-        //    var result = await controller.Get();
-
-        //    Assert.IsType<OkObjectResult>(result);
-        //}
-
-        //[Fact]
-        //public async Task GetById()
-        //{
-        //    var data = new ToDo(4, "fjrm", DateTime.Now, isComplete: 0, 0);
-
-        //    var mockToDoCrud = new Mock<IToDoCrud>();
-        //    mockToDoCrud.Setup(x => x.GetToDoById(data.Id)).ReturnsAsync(data);
-
-        //    ToDoController controller = new ToDoController(mockToDoCrud.Object);
-
-        //    var result = await controller.GetById(data.Id);
-
-        //    Assert.IsType<OkObjectResult>(result);
-        //}
     }
 }
