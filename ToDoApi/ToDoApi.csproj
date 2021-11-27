@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\TextFileDatabase\TextFileDatabase.csproj" />
+    <ProjectReference Include="..\Domain\ToDo.Domain.csproj" />
+    <ProjectReference Include="..\TextFileDatabase\ToDo.TextFileDatabase.csproj" />
     <ProjectReference Include="..\ToDo.EFDatabase\ToDo.EFDatabase.csproj" />
   </ItemGroup>
 
